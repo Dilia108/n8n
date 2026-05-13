@@ -5,9 +5,24 @@
 
 ![testing_environment](image.png)
 
-## Step2: Access Class Workflow
+## Step2: Access Class Workflows
 
-**Workflow:** Document Upload RAG Chatbot with Cohere Reranking - May 13th.json
+Confirm access to workflow3: simple agent
+
+![simple_agent](image-34.png)
+
+Confirm access to workflow1: Google Sheets in n8n
+
+Some examples:
+
+![message_a_model](image-31.png)
+![format_blocks](image-32.png)
+![split_out](image-33.png)
+
+
+## Step3: Analyze Workflows and Document Nodes for Workflow2 (RAG)
+
+**Workflow2:** Document Upload RAG Chatbot with Cohere Reranking - May 13th.json
 
 ### Testing nodes
 

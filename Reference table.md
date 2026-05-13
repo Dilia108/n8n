@@ -1,4 +1,4 @@
-Reference table
+Reference table for Workflow2
 
 
 # n8n Node Reference Table
