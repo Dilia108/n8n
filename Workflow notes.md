@@ -43,22 +43,225 @@ Settings:
 
 => In the node `store in pincone` the input always changes to binary. After that all inputs and outputs remain in JSON format.
 
+**Node2: Store in Pinecone**
+
 ![store_pincone](image-24.png)
+
+**INPUT**
+
+```
+Binary file:
+- File Name: guidelines_for_trustworthy_ai.pdf
+- File Extension: pdf
+- Mime Type: application/pdf
+- File Size: 1.63 MB
+```
+**OUTPUT**
+```json
+[
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": "number",
+      "loc": {
+        "lines": {
+          "from": "number",
+          "to": "number"
+        }
+      }
+    },
+    "pageContent": "string"
+  }
+]
+```
+
+**Summary from JSON input and output:**
+
+| Field | Input | Output | Change |
+|---|---|---|---|
+| File (binary) | ✅ `guidelines_for_trustworthy_ai.pdf` (1.63 MB) | ❌ not present | **Removed** |
+| `metadata` | ❌ not present | ✅ object with source, blobType, line, loc | **Added** |
+| `pageContent` | ❌ not present | ✅ string (filename or mime type) | **Added** |
+
+* **8 items returned** — the PDF was split into 8 chunks ✅
+* Data type fully changes: **binary → structured JSON** ✅
+* `pageContent` shows `"guidelines_for_trustworthy_ai.pdf"` and `"application/pdf"` instead of actual text content ⚠️ — the PDF text is not being extracted, only the filename and mime type are being passed through
+* `blobType` is `"application/json"` which is inconsistent with the actual file type `application/pdf` ⚠️
+* `source: "blob"` confirms the file is being treated as a raw binary blob, not parsed text
+* **Root cause confirmed**: a **PDF extraction/parser node is missing** before this node — without it, Pinecone is storing filenames instead of actual document content
 
 ![store_pinecone_document_loader_input_logs](image-8.png)
 
 ![store_pinecone_document_loader_output_logs](image-9.png)
 
+**Node3: Document loader**
+
 ![document_loader](image-26.png)
+
+**INPUT**
+```json
+[
+  {
+    "trustworthy_ai": [
+      {
+        "filename": "string",
+        "mimetype": "string",
+        "size": "number"
+      }
+    ],
+    "submittedAt": "ISO datetime string",
+    "formMode": "string"
+  }
+]
+```
+
+**OUTPUT**
+
+```json
+[
+  {
+    "response": [
+      {
+        "pageContent": "string",
+        "metadata": {
+          "source": "blob",
+          "blobType": "application/json",
+          "line": "number",
+          "loc": {
+            "lines": {
+              "from": "number",
+              "to": "number"
+            }
+          }
+        }
+      }
+    ]
+  }
+]
+```
+
+**Summary from JSON input and output:**
+
+| Field | Input | Output | Change |
+|---|---|---|---|
+| `trustworthy_ai` | ✅ array with file object | ❌ not present | **Removed** |
+| `submittedAt` | ✅ `"2026-05-13T17:26:28.431+02:00"` | ❌ not present | **Removed** |
+| `formMode` | ✅ `"test"` | ❌ not present | **Removed** |
+| `response` | ❌ not present | ✅ array of document chunks | **Added** |
+| `pageContent` | ❌ not present | ✅ string (filename / mime type) | **Added** |
+| `metadata` | ❌ not present | ✅ object with source, blobType, line, loc | **Added** |
+
+## Input Fields (inside `trustworthy_ai`)
+
+| Field | Value |
+|---|---|
+| `filename` | `"guidelines_for_trustworthy_ai.pdf"` |
+| `mimetype` | `"application/pdf"` |
+| `size` | `1632682` (bytes / ~1.63 MB) |
+
+
+* **Type of Data** is set to **JSON** instead of **Binary** ⚠️ — this is the root cause of the problem. Since the PDF is a binary file, this should be set to **Binary**
+* **Mode** is set to **Load All Input Data** — it's loading the form metadata (filename, mimetype, size) as JSON rather than the actual file binary
+* `pageContent` contains `"guidelines_for_trustworthy_ai.pdf"` and `"application/pdf"` — confirming it's reading **file metadata, not file content** ⚠️
+* `blobType: "application/json"` is incorrect — should be `"application/pdf"` ⚠️
+* Form fields `submittedAt` and `formMode` are fully stripped, only file-related data flows forward
+
+**Node4: OpenAI Embeddings**
 
 ![OpenAI_embeddings](image-27.png)
 
+**INPUT**
+```json
+[
+  {
+    "documents": [
+      "string", "string", "string" ...
+    ]
+  }
+]
+```
+
+**OUTPUT**
+
+```json
+[
+  {
+    "response": [
+      [
+        "float", "float", "float" ... (1536 values total)
+      ]
+    ]
+  }
+]
+```
+**Summary from JSON input and output:**
+| Field | Input | Output | Change |
+|---|---|---|---|
+| `documents` | ✅ array of strings | ❌ not present | **Removed** |
+| `response` | ❌ not present | ✅ nested array of floats | **Added** |
+
+* Input Fields (inside `documents`)
+
+| Value | Note |
+|---|---|
+| `"guidelines_for_trustworthy_ai.pdf"` | filename — repeated multiple times ⚠️ |
+| `"application/pdf"` | mime type — repeated multiple times ⚠️ |
+| `"2026-05-13T17:26:28.431+02:00"` | form submission timestamp |
+| `"test"` | formMode value |
+
+
+* Model used: **text-embedding-3-small** at **1536 dimensions** ✅
+* The `documents` array contains **filenames, mime types, timestamps and form metadata** instead of actual PDF text content ⚠️ — this is the downstream consequence of the Document Loader misconfiguration
+* The node is **successfully generating embeddings** but it's embedding **meaningless metadata strings** rather than document content ⚠️
+* Output `response` is a **double-nested array** `[[float, float...]]` — one embedding vector per input document chunk
+* The transformation is: **array of strings → array of float vectors** (semantic encoding)
+
+
+**Node5: Text Splitter**
+
 ![text_splitter](image-28.png)
 
+**INPUT**
+```json
+[
+  {
+    "textSplitter": "string"
+  }
+]
+```
+
+**OUTPUT**
+
+```json
+[
+  {
+    "response": [
+      "string"
+    ]
+  }
+]
+```
+**Summary from JSON input and output:**
+
+| Field | Input | Output | Change |
+|---|---|---|---|
+| `textSplitter` | ✅ `"application/pdf"` | ❌ not present | **Removed** |
+| `response` | ❌ not present | ✅ array of strings | **Added** |
+
+* **Run 8 of 8** — processed all 8 chunks passed from the Document Loader ✅
+* `textSplitter` receives `"application/pdf"` — a mime type string instead of actual text content ⚠️ — downstream effect of the Document Loader misconfiguration
+* **Chunk Size** is set to **1000** tokens
+* **Chunk Overlap** is set to **0** ⚠️ — no overlap between chunks means context at chunk boundaries may be lost, which can hurt retrieval quality. A value of **100–200** is generally recommended
+* Output `response` contains `"application/pdf"` — the splitter has nothing meaningful to split, so it passes the mime type string through unchanged ⚠️
+* Transformation: **single string → array of strings** (chunking), but since input is meaningless, output is equally meaningless
 
 **First part successfully executed:**
 
 ![load_data_flow](image-10.png)
+
+**Main fix required:**
+Document Loader (Type of Data → Binary)
 
 
 **Node Overview**
@@ -89,7 +292,7 @@ Settings:
 
 ![Chat](image-12.png)
 
-### **NDOE2: Retrieve from Pinecone**
+### **NODE2: Retrieve from Pinecone**
 
 * Pinecone Index: trustworthy-ai-rag (only one created in a former lab)
 
