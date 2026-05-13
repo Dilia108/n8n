@@ -26,7 +26,7 @@ Some examples:
 
 ### Testing nodes
 
-### **First part: RAG Document Embedding & Storage Workflow**
+## **First part: RAG Document Embedding & Storage Workflow**
 
 **Node1: upload document form**
 
@@ -256,7 +256,7 @@ Binary file:
 * Output `response` contains `"application/pdf"` — the splitter has nothing meaningful to split, so it passes the mime type string through unchanged ⚠️
 * Transformation: **single string → array of strings** (chunking), but since input is meaningless, output is equally meaningless
 
-**First part successfully executed:**
+**FIRST PART SUCCESSFULLY EXECUTED:**
 
 ![load_data_flow](image-10.png)
 
@@ -275,7 +275,7 @@ Document Loader (Type of Data → Binary)
 | **Store in Pinecone** | Persists the vectors + metadata to the Pinecone vector database |
 
 
-### **Second part: RAG Query & Reranking Pipeline**
+## **Second part: RAG Query & Reranking Pipeline**
 
 Settings:
 
