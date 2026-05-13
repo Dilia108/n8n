@@ -12,7 +12,7 @@ Reference table
 | Store in Pinecone | Index, credentials, batch size | Pinecone index, embedding batch size `200` | Stores vectors and metadata in Pinecone | Embeddings + metadata | Stored vector records | Persists knowledge base entries |
 | Chat Interface | Chat input | Chat UI settings | Collects the user question | User message | Chat prompt data | User query capture |
 | RAG Agent | Agent instructions, tools | Workflow orchestration settings | Coordinates retrieval and answer generation | Question + retrieved context | Final response draft | Retrieval-augmented orchestration |
-| OpenAI Chat Model | Model, system prompt, messages | OpenAI chat model settings | Generates the final answer | Prompt + context | Natural language answer | Contextual response generation |
+| OpenAI Chat Model | Model, system prompt, messages | OpenAI chat model `gpt-5.4-mini`| Generates the final answer | Prompt + context | Natural language answer | Contextual response generation |
 | Query Embeddings | Model, dimensions | `text-embedding-3-small`, dimension `1536` | Converts the user query into a vector | User question | Query embedding vector | Query to vector representation |
 | Retrieve from Pinecone | Index, top K | Pinecone index `trustworthy-ai-rag` | Fetches the most relevant chunks | Query vector | Retrieved document matches | Similarity search |
 | Cohere Reranker | Model, N | `rerank-v3.5`, `N = 3` | Reorders retrieved chunks by relevance | Retrieved matches | Reranked top results | Relevance ranking |

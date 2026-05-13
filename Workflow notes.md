@@ -15,7 +15,7 @@
 
 **Node1: upload document form**
 
-![doc_upload](image-6.png)
+![doc_upload](image-25.png)
 
 **Nodes: store in pincone/ document loader/ text splitter/OpenAI embeddings** 
 
@@ -25,15 +25,22 @@ Settings:
 * Pinecone credentials/ Pinecone index (from the field created)/ Embedding batch size: 200
 * Document loader: type of data: JSON
 
-![store_pincone](image-7.png)
+![store_pincone](image-24.png)
 
-![store_pinecone_document_loader_input](image-8.png)
+![store_pinecone_document_loader_input_logs](image-8.png)
 
-![store_pinecone_document_loader_output](image-9.png)
+![store_pinecone_document_loader_output_logs](image-9.png)
 
-First part successfully executed:
+![document_loader](image-26.png)
 
-![load_data_flow]](image-10.png)
+![OpenAI_embeddings](image-27.png)
+
+![text_splitter](image-28.png)
+
+
+**First part successfully executed:**
+
+![load_data_flow](image-10.png)
 
 
 **Node Overview**
@@ -66,19 +73,20 @@ Settings:
 
 * Pinecone Index: trustworthy-ai-rag (only one created in a former lab)
 
-![Retrieve_from_pinecone](image-14.png)
+![Retrieve_from_pinecone](image-20.png)
 
-![Cohere_reranker](image-15.png)
+![Cohere_reranker](image-21.png)
 
-![RAG_Agent](image-16.png)
+![RAG_Agent](image-29.png)
 
-![OpenAI_Chat_Model](image-17.png) (did not change the system prompt)
+![OpenAI_Chat_Model](image-23.png)
 
-![Query_embeddings](image-18.png)
+![Query_embeddings](image-22.png)
+
 
 Second part successfully tested:
 
-![RAG_query](image-13.png)
+![RAG_query](image-30.png)
 
 
 **Node Overview**
