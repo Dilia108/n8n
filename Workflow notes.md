@@ -3,21 +3,21 @@
 ## Step1: setting up environment for testing
 
 
-![testing_environment](image.png)
+![testing_environment](Documents/image.png)
 
 ## Step2: Access Class Workflows
 
 Confirm access to workflow3: simple agent
 
-![simple_agent](image-34.png)
+![simple_agent](Documents/image-34.png)
 
 Confirm access to workflow1: Google Sheets in n8n
 
 Some examples:
 
-![message_a_model](image-31.png)
-![format_blocks](image-32.png)
-![split_out](image-33.png)
+![message_a_model](Documents/image-31.png)
+![format_blocks](Documents/image-32.png)
+![split_out](Documents/image-33.png)
 
 
 ## Step3: Analyze Workflows and Document Nodes for Workflow2 (RAG)
@@ -30,7 +30,7 @@ Some examples:
 
 **Node1: upload document form**
 
-![doc_upload](image-25.png)
+![doc_upload](Documents/image-25.png)
 
 
 **Following Nodes: store in pincone/ document loader/ text splitter/OpenAI embeddings** 
@@ -45,7 +45,7 @@ Settings:
 
 **Node2: Store in Pinecone**
 
-![store_pincone](image-24.png)
+![store_pincone](Documents/image-24.png)
 
 **INPUT**
 
@@ -91,13 +91,13 @@ Binary file:
 * `source: "blob"` confirms the file is being treated as a raw binary blob, not parsed text
 * **Root cause confirmed**: a **PDF extraction/parser node is missing** before this node — without it, Pinecone is storing filenames instead of actual document content
 
-![store_pinecone_document_loader_input_logs](image-8.png)
+![store_pinecone_document_loader_input_logs](Documents/image-8.png)
 
-![store_pinecone_document_loader_output_logs](image-9.png)
+![store_pinecone_document_loader_output_logs](Documents/image-9.png)
 
 **Node3: Document loader**
 
-![document_loader](image-26.png)
+![document_loader](Documents/image-26.png)
 
 **INPUT**
 ```json
@@ -169,7 +169,7 @@ Binary file:
 
 **Node4: OpenAI Embeddings**
 
-![OpenAI_embeddings](image-27.png)
+![OpenAI_embeddings](Documents/image-27.png)
 
 **INPUT**
 ```json
@@ -220,7 +220,7 @@ Binary file:
 
 **Node5: Text Splitter**
 
-![text_splitter](image-28.png)
+![text_splitter](Documents/image-28.png)
 
 **INPUT**
 ```json
@@ -258,7 +258,7 @@ Binary file:
 
 **FIRST PART SUCCESSFULLY EXECUTED:**
 
-![load_data_flow](image-10.png)
+![load_data_flow](Documents/image-10.png)
 
 **Main fix required:**
 Document Loader (Type of Data → Binary)
@@ -281,7 +281,7 @@ Settings:
 
 * OpenAI Chat Model:
 
-![OpenAI_chat_model](image-11.png)
+![OpenAI_chat_model](Documents/image-11.png)
 
 * Query embeddings: text-embedding-3-small / Dimension: 1536
 * Cohere credentials. Model rerank-v3.5. N=3
@@ -290,13 +290,13 @@ Settings:
 
 ### **NODE1: Chat interface**
 
-![Chat](image-12.png)
+![Chat](Documents/image-12.png)
 
 ### **NODE2: Retrieve from Pinecone**
 
 * Pinecone Index: trustworthy-ai-rag (only one created in a former lab)
 
-![Retrieve_from_pinecone](image-20.png)
+![Retrieve_from_pinecone](Documents/image-20.png)
 
 **Summary from JSON input and output:**
 
@@ -315,7 +315,7 @@ Settings:
 
 ### **NODE3: Cohere Reranker**
 
-![Cohere_reranker](image-21.png)
+![Cohere_reranker](Documents/image-21.png)
 
 **INPUT:**
 
@@ -394,7 +394,7 @@ Settings:
 
 ### **NODE4:OpenAI Chat Model**
 
-![OpenAI_Chat_Model](image-23.png)
+![OpenAI_Chat_Model](Documents/image-23.png)
 
 **INPUT:**
 
@@ -463,7 +463,7 @@ Settings:
 ### **NODE5: Query Embeddings**
 
 
-![Query_embeddings](image-22.png)
+![Query_embeddings](Documents/image-22.png)
 
 **INPUT:**
 ```json
@@ -503,7 +503,7 @@ Settings:
 
 ### **NODE6: RAG Agent**
 
-![RAG_Agent](image-29.png)
+![RAG_Agent](Documents/image-29.png)
 
 
 
@@ -563,7 +563,7 @@ Output structure:
 
 **Second part successfully tested:**
 
-![RAG_query](image-30.png)
+![RAG_query](Documents/image-30.png)
 
 
 
