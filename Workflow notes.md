@@ -32,13 +32,16 @@ Some examples:
 
 ![doc_upload](image-25.png)
 
-**Nodes: store in pincone/ document loader/ text splitter/OpenAI embeddings** 
+
+**Following Nodes: store in pincone/ document loader/ text splitter/OpenAI embeddings** 
 
 Settings:
 
 * Embedding settings: text-embedding-3-small / Dimension: 1536
-* Pinecone credentials/ Pinecone index (from the field created)/ Embedding batch size: 200
+* Pinecone credentials/ Pinecone index (selected the field I created when uploading the pdf)/ Embedding batch size: 200
 * Document loader: type of data: JSON
+
+=> In the node `store in pincone` the input always changes to binary. After that all inputs and outputs remain in JSON format.
 
 ![store_pincone](image-24.png)
 
@@ -55,7 +58,6 @@ Settings:
 
 **First part successfully executed:**
 
-![load_data_flow](image-10.png)
 ![load_data_flow](image-10.png)
 
 
@@ -100,7 +102,62 @@ Settings:
 ![Query_embeddings](image-22.png)
 
 
-Second part successfully tested:
+* **Examples from JSON structure:**
+
+**INPUT:**
+
+[
+  {
+    "action": "sendMessage",
+    "sessionId": "fa73aed6deb74a3c8182ec96fd755f41",
+    "chatInput": "what does privacy and data governance include"
+  }
+]
+
+**OUTPUT:**
+
+[
+  {
+    "output": "Privacy and data governance include:\n\n- Ensuring the right to privacy and protection of personal data throughout the AI system lifecycle\n- Applying data minimisation and data protection by design and by default\n- Using measures such as anonymisation and encryption\n- Using technology that allows algorithms to be brought to the data, so AI can be trained without transferring or copying raw/structured data\n- For training, validation, and testing data sets: making them relevant, sufficiently representative, as error-free and complete as possible\n- Including transparency about the original purpose of personal data collection\n- Ensuring datasets have appropriate statistical properties and mitigating biases that could affect health, safety, fundamental rights, or lead to discrimination\n\nUsed document: **eu_ai_act.pdf** (EU AI Act, Regulation (EU) 2024/1689)."
+  }
+]
+
+* **Analysis:**
+
+Input structure:
+
+[
+  {
+    "action": "string",
+    "sessionId": "string",
+    "chatInput": "string"
+  }
+]
+
+Output structure:
+[
+  {
+    "output": "string"
+  }
+]
+
+
+**Summary:**
+
+* The array wrapper [ ] is preserved ✅
+* All 3 input fields were consumed by the agent and not passed through
+* A single new output field was generated containing the agent's response
+* The response includes inline citations (**eu_ai_act.pdf**) — meaning your system prompt instruction to cite sources is working ✅
+
+| Field | Input | Output | Change |
+|---|---|---|---|
+| `action` | `"sendMessage"` | ❌ not present | **Removed** |
+| `sessionId` | `"fa73aed6..."` | ❌ not present | **Removed** |
+| `chatInput` | `"what does privacy..."` | ❌ not present | **Removed** |
+| `output` | ❌ not present | ✅ present (long text) | **Added** |
+
+
+**Second part successfully tested:**
 
 ![RAG_query](image-30.png)
 
