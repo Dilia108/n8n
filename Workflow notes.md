@@ -41,6 +41,7 @@ Settings:
 **First part successfully executed:**
 
 ![load_data_flow](image-10.png)
+![load_data_flow](image-10.png)
 
 
 **Node Overview**
